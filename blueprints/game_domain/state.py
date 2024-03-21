@@ -5,7 +5,7 @@ who's turn it is (._whos_turn),
 method to validate and to make a move, and
 
 getters of
-- the state itself (to save in DB),
+- the state itself (to save in a DB if needed),
 - what the board looks like for each player, and
 - whether anyone has won (or draw).
 """
@@ -72,9 +72,13 @@ class Board:
             self.cells[x][y] = PlayerPiece(player, piece)
 
 class State:
+    """ Init with a standard game position """
     def __init__(self):
         self._whos_turn = Player.white
-        self.board = Board()
+        self._board = Board()
     def get_whos_turn(self) -> Player:
         """ Get who's turn it is (only maks sense if there's no winner or draw) """
         return self._whos_turn
+    def get_board(self):
+        """ Get what's in each cell (PlayerPiece or None) """
+        return self._board
