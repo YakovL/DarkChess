@@ -1,6 +1,6 @@
 """
 Game state consists of the board state (what does each cell contain, .board),
-who's turn it is (.whos_turn),
+who's turn it is (._whos_turn),
 
 method to validate and to make a move, and
 
@@ -73,5 +73,8 @@ class Board:
 
 class State:
     def __init__(self):
-        self.whos_turn = Player.white
+        self._whos_turn = Player.white
         self.board = Board()
+    def get_whos_turn(self) -> Player:
+        """ Get who's turn it is (only maks sense if there's no winner or draw) """
+        return self._whos_turn
