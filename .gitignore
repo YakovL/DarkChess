@@ -1,0 +1,4 @@
+.vscode/
+dark_chess_venv/
+__pycache__/
+.pytest_cache/
