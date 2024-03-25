@@ -1,4 +1,6 @@
 """
+This describes the whole game domain logic
+
 Game state consists of the board state (what does each cell contain, .board),
 who's turn it is (._whos_turn),
 
@@ -7,7 +9,10 @@ method to validate and to make a move, and
 getters of
 - the state itself (to save in a DB if needed),
 - what the board looks like for each player, and
-- whether anyone has won (or draw).
+- whether anyone has won (or it's a draw).
+
+Note: whites are on the bottom of the Board (y = 0, 1),
+board view is not rotated for blacks (should be done on UI level).
 """
 from enum import Enum
 from typing import Union
@@ -82,3 +87,93 @@ class State:
     def get_board(self):
         """ Get what's in each cell (PlayerPiece or None) """
         return self._board
+
+    def _is_empty_path(self, x_from: int, y_from: int, x_to: int, y_to: int) -> bool:
+        if x_from == x_to:
+            for y in range(min(y_from, y_to) + 1, max(y_from, y_to)):
+                if self._board.cells[x_from][y] is not None:
+                    return False
+            return True
+
+        if y_from == y_to:
+            for x in range(min(x_from, x_to) + 1, max(x_from, x_to)):
+                if self._board.cells[x][y_from] is not None:
+                    return False
+            return True
+
+        # incorrect input
+        return False
+    def _is_empty_diagonal_path(self, x_from: int, y_from: int, x_to: int, y_to: int) -> bool:
+        # incorrect input
+        if abs(x_to - x_from) != abs(y_to - y_from):
+            return False
+
+        for x in range(min(x_from, x_to) + 1, max(x_from, x_to)):
+            y = y_from + (x - min(x_from, x_to)) * (y_to - y_from) / (x_to - x_from)
+            if self._board.cells[x][int(y)] is not None:
+                return False
+        return True
+    def is_move_valid(self,
+                      whos_turn: Player,
+                      x_from: int,
+                      y_from: int,
+                      x_to: int,
+                      y_to: int) -> bool:
+        """ Check if the move is valid """
+        cell_from = self._board.cells[x_from][y_from]
+        cell_to = self._board.cells[x_to][y_to]
+
+        # only own piece, inside board, to a different cell, not occupied by another own piece
+        if cell_from is None or cell_from.player != whos_turn or \
+           x_to > 7 or y_to > 7 or x_to < 0 or y_to < 0 or \
+           x_to == x_from and y_to == y_from or \
+           cell_to is not None and cell_to.player == whos_turn:
+            return False
+        #TODO: prevent a move that causes checkmate (and make sure there's no infinite loop)
+
+        # check that this piece can make this move
+        if cell_from.piece == Piece.knight:
+            return abs(x_to - x_from) == 2 and abs(y_to - y_from) == 1 or \
+                   abs(x_to - x_from) == 1 and abs(y_to - y_from) == 2
+
+        if cell_from.piece == Piece.rook:
+            if x_to != x_from and y_to == y_from:
+                return False
+            return self._is_empty_path(x_from, y_from, x_to, y_to)
+
+        if cell_from.piece == Piece.bishop:
+            if abs(x_to - x_from) != abs(y_to - y_from):
+                return False
+            return self._is_empty_diagonal_path(x_from, y_from, x_to, y_to)
+
+        if cell_from.piece == Piece.queen:
+            if x_to != x_from and y_to == y_from:
+                return self._is_empty_path(x_from, y_from, x_to, y_to)
+            if abs(x_to - x_from) != abs(y_to - y_from):
+                return self._is_empty_diagonal_path(x_from, y_from, x_to, y_to)
+            return False
+
+        if cell_from.piece == Piece.pawn:
+            if whos_turn == Player.white and y_to < y_from or \
+               whos_turn == Player.black and y_to > y_from:
+                return False
+
+            if x_from == x_to:
+                # no need to check the player:
+                # wrong direction and moves to y = 8 or -1 are disallowed above
+                return (abs(y_to - y_from) == 1) or \
+                       (abs(y_to - y_from) == 2 and y_from in (1, 6))
+
+            # capture, including en passant
+            if abs(x_from - x_to) > 1 or abs(y_from - y_to) > 1 or y_from == y_to:
+                return False
+
+            return cell_to is not None or \
+                   self._board.cells[x_to][y_from] is not None
+
+        if cell_from.piece == Piece.king:
+            #TODO: implement castling
+            return abs(x_to - x_from) <= 1 and abs(y_to - y_from) <= 1
+
+        # incorrect input
+        return False
