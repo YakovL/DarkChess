@@ -165,7 +165,7 @@ class State:
                    abs(x_to - x_from) == 1 and abs(y_to - y_from) == 2
 
         if cell_from.piece == Piece.rook:
-            if x_to != x_from and y_to == y_from:
+            if x_to != x_from and y_to != y_from:
                 return False
             return self._is_empty_path(x_from, y_from, x_to, y_to)
 
@@ -175,9 +175,9 @@ class State:
             return self._is_empty_diagonal_path(x_from, y_from, x_to, y_to)
 
         if cell_from.piece == Piece.queen:
-            if x_to != x_from and y_to == y_from:
+            if x_to == x_from or y_to == y_from:
                 return self._is_empty_path(x_from, y_from, x_to, y_to)
-            if abs(x_to - x_from) != abs(y_to - y_from):
+            if abs(x_to - x_from) == abs(y_to - y_from):
                 return self._is_empty_diagonal_path(x_from, y_from, x_to, y_to)
             return False
 
