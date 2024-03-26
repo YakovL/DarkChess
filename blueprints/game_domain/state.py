@@ -182,23 +182,27 @@ class State:
             return False
 
         if cell_from.piece == Piece.pawn:
+            # only correct direction
             if whos_turn == Player.white and y_to < y_from or \
                whos_turn == Player.black and y_to > y_from:
                 return False
 
+            # move forward
             if x_from == x_to:
                 # no need to check the player:
                 # wrong direction and moves to y = 8 or -1 are disallowed above
-                return (abs(y_to - y_from) == 1) or \
-                       (abs(y_to - y_from) == 2 and y_from in (1, 6))
+                return cell_to is None and (
+                       abs(y_to - y_from) == 1 or \
+                       abs(y_to - y_from) == 2 and y_from in (1, 6)
+                )
 
             # capture
-            #TODO: implement en passant
-            if abs(x_from - x_to) > 1 or abs(y_from - y_to) > 1: # or y_from == y_to:
+            if abs(x_from - x_to) > 1 or abs(y_from - y_to) > 1:
                 return False
 
-            return cell_to is not None or \
-                   self._board.cells[x_to][y_from] is not None
+            #TODO: implement en passant
+            return cell_to is not None #or \
+            #       self._board.cells[x_to][y_from] is not None
 
         if cell_from.piece == Piece.king:
             #TODO: implement castling
