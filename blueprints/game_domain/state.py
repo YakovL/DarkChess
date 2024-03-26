@@ -178,3 +178,20 @@ class State:
 
         # incorrect input
         return False
+
+    def make_move(self, x_from: int, y_from: int, x_to: int, y_to: int) -> None:
+        """
+        Change the state accordingly (without validation, as it would produce an infinite loop).
+        Doesn't promote pawns, should be done separately.
+        """
+        moving_piece = self._board.cells[x_from][y_from]
+        if moving_piece is None:
+            return
+
+        #TODO: implement en passant (if moving_piece.piece == Piece.pawn, ...)
+        #TODO: implement castling (if moving_piece.piece == Piece.king, ...)
+
+        self._board.cells[x_to][y_to] = moving_piece
+        self._board.cells[x_from][y_from] = None
+    #TODO: implement promotion separately
+
