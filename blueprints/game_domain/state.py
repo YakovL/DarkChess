@@ -164,8 +164,9 @@ class State:
                 return (abs(y_to - y_from) == 1) or \
                        (abs(y_to - y_from) == 2 and y_from in (1, 6))
 
-            # capture, including en passant
-            if abs(x_from - x_to) > 1 or abs(y_from - y_to) > 1 or y_from == y_to:
+            # capture
+            #TODO: implement en passant
+            if abs(x_from - x_to) > 1 or abs(y_from - y_to) > 1: # or y_from == y_to:
                 return False
 
             return cell_to is not None or \
