@@ -16,6 +16,7 @@ board view is not rotated for blacks (should be done on UI level).
 """
 from enum import Enum
 from typing import Union
+from copy import deepcopy
 
 Player = Enum('Player', 'white black')
 Piece = Enum('Piece', 'pawn rook bishop knight queen king')
@@ -113,12 +114,35 @@ class State:
             if self._board.cells[x][int(y)] is not None:
                 return False
         return True
+    def is_king_under_attack(self, king_owner: Player):
+        """ Check if the king is under attack """
+        opponent = Player.black if king_owner == Player.white else Player.white
+        opponent_cells_coordinates: list[tuple[int, int]] = []
+        king_coordinates = None
+        for x in range(8):
+            for y in range(8):
+                in_cell = self._board.cells[x][y]
+                if in_cell is None: continue
+                if in_cell.player == opponent:
+                    opponent_cells_coordinates.append((x, y))
+                if in_cell.player == king_owner and in_cell.piece == Piece.king:
+                    king_coordinates = (x, y)
+        if king_coordinates is None:
+            return False
+
+        for cell_coordinates in opponent_cells_coordinates:
+            if self.is_move_valid(opponent,
+                                  cell_coordinates[0], cell_coordinates[1],
+                                  king_coordinates[0], king_coordinates[1]):
+                return True
+        return False
     def is_move_valid(self,
                       whos_turn: Player,
                       x_from: int,
                       y_from: int,
                       x_to: int,
-                      y_to: int) -> bool:
+                      y_to: int,
+                      is_virtual: int = False) -> bool:
         """ Check if the move is valid """
         cell_from = self._board.cells[x_from][y_from]
         cell_to = self._board.cells[x_to][y_to]
@@ -129,7 +153,11 @@ class State:
            x_to == x_from and y_to == y_from or \
            cell_to is not None and cell_to.player == whos_turn:
             return False
-        #TODO: prevent a move that causes checkmate (and make sure there's no infinite loop)
+        # shouldn't put their king under attack
+        if not is_virtual:
+            state_after_move = self.make_virtual_move(x_from, y_from, x_to, y_to)
+            if state_after_move.is_king_under_attack(whos_turn):
+                return False
 
         # check that this piece can make this move
         if cell_from.piece == Piece.knight:
@@ -194,4 +222,10 @@ class State:
         self._board.cells[x_to][y_to] = moving_piece
         self._board.cells[x_from][y_from] = None
     #TODO: implement promotion separately
+
+    def make_virtual_move(self, x_from: int, y_from: int, x_to: int, y_to: int) -> 'State':
+        """ Create a new State, make the move in it, and return it """
+        virtual_state = State(self._whos_turn, deepcopy(self._board))
+        virtual_state.make_move(x_from, y_from, x_to, y_to)
+        return virtual_state
 

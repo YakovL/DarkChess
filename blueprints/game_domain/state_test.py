@@ -1,4 +1,4 @@
-from state import State, Player, Piece
+from state import State, Board, Player, Piece
 
 def test_init():
     """
@@ -56,4 +56,19 @@ def test_is_move_valid():
     assert game_state.is_move_valid(Player.white, 1, 0, 2, 2) is True
     assert game_state.is_move_valid(Player.white, 1, 0, 0, 2) is True
     assert game_state.is_move_valid(Player.white, 1, 0, 1, 2) is False
+
+    # king shouldn't get or stay under attack
+    #    k
+    #   /b
+    #  B
+    #
+    #    K
+    game_state = State(board_position=Board(positions=[
+        (Player.black, Piece.king, 3, 4),
+        (Player.black, Piece.bishop, 3, 3),
+        (Player.white, Piece.king, 3, 0),
+        (Player.white, Piece.bishop, 1, 2)
+    ]), whos_turn=Player.black)
+    assert game_state.is_move_valid(Player.black, 3, 7, 2, 6) is False
+    assert game_state.is_move_valid(Player.black, 3, 6, 2, 5) is False
 
