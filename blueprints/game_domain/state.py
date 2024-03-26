@@ -77,10 +77,10 @@ class Board:
             self.cells[x][y] = PlayerPiece(player, piece)
 
 class State:
-    """ Init with a standard game position """
-    def __init__(self):
-        self._whos_turn = Player.white
-        self._board = Board()
+    """ Init with a standard game position by default """
+    def __init__(self, whos_turn: Player = Player.white, board_position: Board = Board()):
+        self._whos_turn = whos_turn
+        self._board = board_position
     def get_whos_turn(self) -> Player:
         """ Get who's turn it is (only maks sense if there's no winner or draw) """
         return self._whos_turn
