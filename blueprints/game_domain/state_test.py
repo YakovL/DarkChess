@@ -6,7 +6,6 @@ def test_init():
     check also the corner pieces and another two positions
     """
     game_state = GameState()
-    assert game_state.get_winner() is None
 
     bottom_left_piece = game_state.get_board().cells[0][0]
     assert bottom_left_piece is not None
@@ -82,6 +81,11 @@ def test_is_checkmated():
     
     K
     """
+    game_state = GameState()
+    # neither player is checkmated on start
+    assert game_state.is_checkmated(Player.black) is False
+    assert game_state.is_checkmated(Player.white) is False
+
     game_state = GameState(board_position=Board(positions=[
         (Player.white, Piece.king, 0, 0),
         (Player.black, Piece.king, 3, 2),
