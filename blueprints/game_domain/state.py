@@ -88,6 +88,15 @@ class State:
     def get_board(self):
         """ Get what's in each cell (PlayerPiece or None) """
         return self._board
+    def get_player_pieces_coordinates(self, player: Player) -> list[tuple[int, int]]:
+        """ Get the coordinates of all player's pieces """
+        return [
+            (x, y)
+            for x in range(8)
+            for y in range(8)
+            if (in_cell := self._board.cells[x][y]) is not None
+            and in_cell.player == player
+        ]
 
     def _is_empty_path(self, x_from: int, y_from: int, x_to: int, y_to: int) -> bool:
         if x_from == x_to:
@@ -233,3 +242,22 @@ class State:
         virtual_state.make_move(x_from, y_from, x_to, y_to)
         return virtual_state
 
+    #TODO: optimize the approach to iterate possible moves
+    def is_checkmated(self, player: Player) -> bool:
+        """ Returns whether the player is checkmated, assuming it's their turn """
+        if not self.is_king_under_attack(player):
+            return False
+
+        player_pieces_coordinates = self.get_player_pieces_coordinates(player)
+        for x_from, y_from in player_pieces_coordinates:
+            for x_to in range(8):
+                for y_to in range(8):
+                    if self.is_move_valid(player, x_from, y_from, x_to, y_to):
+
+                        # for each possible move,
+                        # check if it allows to get the king from under attack
+                        possible_state = self.make_virtual_move(x_from, y_from, x_to, y_to)
+                        if not possible_state.is_king_under_attack(player):
+                            return False
+
+        return True

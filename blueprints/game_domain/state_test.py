@@ -72,3 +72,35 @@ def test_is_move_valid():
     assert game_state.is_move_valid(Player.black, 3, 7, 2, 6) is False
     assert game_state.is_move_valid(Player.black, 3, 6, 2, 5) is False
 
+def test_is_checkmated():
+    """
+    Check simple cases: on diagram below, white (upper case)
+    are expected to be checkmated when black have 2 rooks,
+    and not to be checkmated when black have either 1 rook:
+
+    rr k
+    
+    K
+    """
+    game_state = State(board_position=Board(positions=[
+        (Player.white, Piece.king, 0, 0),
+        (Player.black, Piece.king, 3, 2),
+        (Player.black, Piece.rook, 0, 2),
+        (Player.black, Piece.rook, 1, 2),
+    ]), whos_turn=Player.white)
+    assert game_state.is_checkmated(Player.white) is True
+
+    game_state = State(board_position=Board(positions=[
+        (Player.white, Piece.king, 0, 0),
+        (Player.black, Piece.king, 3, 2),
+        (Player.black, Piece.rook, 0, 2),
+    ]), whos_turn=Player.white)
+    assert game_state.is_checkmated(Player.white) is False
+
+    game_state = State(board_position=Board(positions=[
+        (Player.white, Piece.king, 0, 0),
+        (Player.black, Piece.king, 3, 2),
+        (Player.black, Piece.rook, 1, 2),
+    ]), whos_turn=Player.white)
+    assert game_state.is_checkmated(Player.white) is False
+
