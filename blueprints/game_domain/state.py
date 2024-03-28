@@ -126,20 +126,20 @@ class State:
     def is_king_under_attack(self, king_owner: Player):
         """ Check if the king is under attack """
         opponent = Player.black if king_owner == Player.white else Player.white
-        opponent_cells_coordinates: list[tuple[int, int]] = []
+        opponent_pieces_coordinates: list[tuple[int, int]] = []
         king_coordinates = None
         for x in range(8):
             for y in range(8):
                 in_cell = self._board.cells[x][y]
                 if in_cell is None: continue
                 if in_cell.player == opponent:
-                    opponent_cells_coordinates.append((x, y))
+                    opponent_pieces_coordinates.append((x, y))
                 if in_cell.player == king_owner and in_cell.piece == Piece.king:
                     king_coordinates = (x, y)
         if king_coordinates is None:
             return False
 
-        for cell_coordinates in opponent_cells_coordinates:
+        for cell_coordinates in opponent_pieces_coordinates:
             if self.is_move_valid(opponent,
                                   cell_coordinates[0], cell_coordinates[1],
                                   king_coordinates[0], king_coordinates[1]):
