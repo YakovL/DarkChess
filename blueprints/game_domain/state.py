@@ -77,7 +77,7 @@ class Board:
             player, piece, x, y = position
             self.cells[x][y] = PlayerPiece(player, piece)
 
-class State:
+class GameState:
     """ Init with a standard game position by default """
     def __init__(self, whos_turn: Player = Player.white, board_position: Board = Board()):
         self._whos_turn = whos_turn
@@ -236,9 +236,9 @@ class State:
         self._board.cells[x_from][y_from] = None
     #TODO: implement promotion separately
 
-    def make_virtual_move(self, x_from: int, y_from: int, x_to: int, y_to: int) -> 'State':
-        """ Create a new State, make the move in it, and return it """
-        virtual_state = State(self._whos_turn, deepcopy(self._board))
+    def make_virtual_move(self, x_from: int, y_from: int, x_to: int, y_to: int) -> 'GameState':
+        """ Create a new GameState, make the move in it, and return it """
+        virtual_state = GameState(self._whos_turn, deepcopy(self._board))
         virtual_state.make_move(x_from, y_from, x_to, y_to)
         return virtual_state
 

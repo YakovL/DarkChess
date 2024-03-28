@@ -1,11 +1,11 @@
-from state import State, Board, Player, Piece
+from state import GameState, Board, Player, Piece
 
 def test_init():
     """
     With default positions, nobody wins;
     check also the corner pieces and another two positions
     """
-    game_state = State()
+    game_state = GameState()
     assert game_state.get_winner() is None
 
     bottom_left_piece = game_state.get_board().cells[0][0]
@@ -30,7 +30,7 @@ def test_is_move_valid():
     """
     Check various valid and invalid moves
     """
-    game_state = State()
+    game_state = GameState()
 
     # not their piece = not their turn
     assert game_state.is_move_valid(Player.white, 0, 6, 0, 5) is False
@@ -63,7 +63,7 @@ def test_is_move_valid():
     #  B
     #
     #    K
-    game_state = State(board_position=Board(positions=[
+    game_state = GameState(board_position=Board(positions=[
         (Player.black, Piece.king, 3, 4),
         (Player.black, Piece.bishop, 3, 3),
         (Player.white, Piece.king, 3, 0),
@@ -82,7 +82,7 @@ def test_is_checkmated():
     
     K
     """
-    game_state = State(board_position=Board(positions=[
+    game_state = GameState(board_position=Board(positions=[
         (Player.white, Piece.king, 0, 0),
         (Player.black, Piece.king, 3, 2),
         (Player.black, Piece.rook, 0, 2),
@@ -90,14 +90,14 @@ def test_is_checkmated():
     ]), whos_turn=Player.white)
     assert game_state.is_checkmated(Player.white) is True
 
-    game_state = State(board_position=Board(positions=[
+    game_state = GameState(board_position=Board(positions=[
         (Player.white, Piece.king, 0, 0),
         (Player.black, Piece.king, 3, 2),
         (Player.black, Piece.rook, 0, 2),
     ]), whos_turn=Player.white)
     assert game_state.is_checkmated(Player.white) is False
 
-    game_state = State(board_position=Board(positions=[
+    game_state = GameState(board_position=Board(positions=[
         (Player.white, Piece.king, 0, 0),
         (Player.black, Piece.king, 3, 2),
         (Player.black, Piece.rook, 1, 2),
