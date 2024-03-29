@@ -119,7 +119,7 @@ class GameState:
             return False
 
         for x in range(min(x_from, x_to) + 1, max(x_from, x_to)):
-            y = y_from + (x - min(x_from, x_to)) * (y_to - y_from) / (x_to - x_from)
+            y = y_from + (x - x_from) * (y_to - y_from) / (x_to - x_from)
             if self._board.cells[x][int(y)] is not None:
                 return False
         return True
