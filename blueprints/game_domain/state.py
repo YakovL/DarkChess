@@ -15,7 +15,7 @@ Note: whites are on the bottom of the Board (y = 0, 1),
 board view is not rotated for blacks (should be done on UI level).
 """
 from enum import Enum
-from typing import Union
+from typing import Union, TypedDict
 from copy import deepcopy
 
 Player = Enum('Player', 'white black')
@@ -76,6 +76,12 @@ class Board:
         for position in positions:
             player, piece, x, y = position
             self.cells[x][y] = PlayerPiece(player, piece)
+
+#TODO: use Python 3.10 and Literal Type (Literal['is_dark']) instead
+class IsDark:
+    pass
+BoardViewCell = Union[PlayerPiece, IsDark, None]
+BoardView = list[list[BoardViewCell]]
 
 class GameState:
     """ Init with a standard game position by default """
@@ -282,4 +288,46 @@ class GameState:
 
         self._board.cells[x][y] = PlayerPiece(player, piece)
         return True
+
+    def get_board_view(self, player: Player) -> BoardView:
+        """ Returns the board view of the given player """
+        view: BoardView = [[None for _ in range(8)] for _ in range(8)]
+        class PieceOnBoard(TypedDict):
+            """ This is just to type player_pieces here """
+            piece: Piece
+            x: int
+            y: int
+        player_pieces: list[PieceOnBoard] = []
+
+        # copy pieces into the view and gather player_pieces
+        for x in range(8):
+            for y in range(8):
+                piece_in_cell = self._board.cells[x][y]
+                view[x][y] = piece_in_cell
+
+                if piece_in_cell is not None and piece_in_cell.player == player:
+                    player_pieces.append({ 'piece': piece_in_cell.piece, 'x': x, 'y': y })
+
+        # calc visibility mask
+        visibility_mask = [[False for _ in range(8)] for _ in range(8)]
+        for piece in player_pieces:
+            for x in range(8):
+                for y in range(8):
+                    if visibility_mask[x][y]:
+                        continue
+
+                    # the cell is visible if their piece occupies it or can move to it
+                    if piece['x'] == x and piece['y'] == y:
+                        visibility_mask[x][y] = True
+                        continue
+                    if self.is_move_valid(player, piece['x'], piece['y'], x, y, is_virtual=True):
+                        visibility_mask[x][y] = True
+
+        # apply visibility mask
+        for x in range(8):
+            for y in range(8):
+                if not visibility_mask[x][y]:
+                    view[x][y] = IsDark()
+
+        return view
 

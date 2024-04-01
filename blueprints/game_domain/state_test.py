@@ -1,4 +1,10 @@
-from state import GameState, Board, Player, Piece
+from state import (
+    GameState,
+    Board,
+    Player,
+    Piece,
+    IsDark,
+)
 
 def test_init():
     """
@@ -135,4 +141,20 @@ def test_promote():
     updated_cell = game_state.get_board().cells[0][7]
     assert updated_cell is not None
     assert updated_cell.piece == Piece.queen
+
+def test_get_board_view():
+    """
+    Check that each player sees their half of the board on start
+    """
+    game_state = GameState()
+    board_view_white = game_state.get_board_view(Player.white)
+    board_view_black = game_state.get_board_view(Player.black)
+
+    for x in range(8):
+        for y in range(4):
+            assert not isinstance(board_view_white[x][y], IsDark)
+            assert isinstance(board_view_black[x][y], IsDark)
+        for y in range(4, 8):
+            assert isinstance(board_view_white[x][y], IsDark)
+            assert not isinstance(board_view_black[x][y], IsDark)
 
