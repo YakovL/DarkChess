@@ -1,5 +1,21 @@
 """
-This describes the whole game domain logic
+This describes the whole game domain logic.
+
+The modification of standart chess is the limited visibility of the board,
+calced in the get_board_view method. This is an experimental feature, and
+may be modified in the future versions. 
+
+Here's an example of a board and it's views for both players:
+
+    k        XXXXXXX    XXX k XX
+P           PXXXXXXX    PXX   XX
+            XXXXXXXX    X XXXXXX
+            XXXXXXXX    XX XXXXX
+            XXXXXXXX    XXX XXXX
+            XXXXXXXX    XXXX XXX
+            XXX   XX    XXXXX X
+    K b     XXX K XX    XXXXXXbX
+
 
 Game state consists of the board state (what does each cell contain, .board),
 who's turn it is (._whos_turn),
