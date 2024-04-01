@@ -108,3 +108,31 @@ def test_is_checkmated():
     ]), whos_turn=Player.white)
     assert game_state.is_checkmated(Player.white) is False
 
+def test_promote():
+    """ Check that promotes only a pawn on the "last" line only to correct pieces """
+    game_state = GameState(board_position=Board(positions=[
+        (Player.white, Piece.king, 4, 0),
+        (Player.white, Piece.pawn, 0, 7),
+        (Player.white, Piece.pawn, 0, 0),
+        (Player.black, Piece.king, 4, 7),
+        (Player.black, Piece.bishop, 6, 0),
+    ]))
+    # empty cell
+    assert game_state.promote(Player.white, 0, 3, Piece.queen) is False
+    # not their piece
+    assert game_state.promote(Player.black, 0, 7, Piece.queen) is False
+    # not on the last line
+    assert game_state.promote(Player.white, 0, 0, Piece.queen) is False
+    # can't keep being a pawn
+    assert game_state.promote(Player.white, 0, 7, Piece.pawn) is False
+    # can't become a king
+    assert game_state.promote(Player.white, 0, 7, Piece.king) is False
+    # not a pawn
+    assert game_state.promote(Player.black, 6, 0, Piece.queen) is False
+
+    # correct promotion
+    assert game_state.promote(Player.white, 0, 7, Piece.queen) is True
+    updated_cell = game_state.get_board().cells[0][7]
+    assert updated_cell is not None
+    assert updated_cell.piece == Piece.queen
+

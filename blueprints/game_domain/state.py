@@ -261,3 +261,25 @@ class GameState:
                             return False
 
         return True
+    def promote(self, player: Player, x: int, y: int, piece: Piece) -> bool:
+        """
+        Promotes a pawn if it is in the given cell, is owned by the given player, etc.
+        Returns True if everything is correct and the promotion was done (False otherwise).
+        """
+        cell = self._board.cells[x][y]
+
+        # should be their pawn
+        if cell is None or cell.player != player or cell.piece is not Piece.pawn:
+            return False
+
+        # should reach the other end
+        if player == Player.white and y != 7 or player == Player.black and y != 0:
+            return False
+
+        # not all pieces are allowed to promote into
+        if piece in { Piece.king, Piece.pawn }:
+            return False
+
+        self._board.cells[x][y] = PlayerPiece(player, piece)
+        return True
+
