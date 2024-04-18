@@ -256,6 +256,8 @@ class GameState:
 
         self._board.cells[x_to][y_to] = moving_piece
         self._board.cells[x_from][y_from] = None
+
+        self._whos_turn = Player.black if self._whos_turn == Player.white else Player.white
     #TODO: implement promotion separately
 
     def make_virtual_move(self, x_from: int, y_from: int, x_to: int, y_to: int) -> 'GameState':
