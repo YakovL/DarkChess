@@ -32,22 +32,17 @@ board view is not rotated for blacks (should be done on UI level).
 """
 from enum import Enum
 from typing import Union, TypedDict
+from dataclasses import dataclass
 from copy import deepcopy
 
 Player = Enum('Player', 'white black')
 Piece = Enum('Piece', 'pawn rook bishop knight queen king')
 
+@dataclass
 class PlayerPiece:
     """ Black bishop, etc. """
-    def __init__(self, player: Player, piece: Piece):
-        self.player = player
-        self.piece = piece
-
-    def to_json(self):
-        return {
-            'player': self.player.name,
-            'piece': self.piece.name,
-        }
+    player: Player
+    piece: Piece
 
 class Board:
     """
