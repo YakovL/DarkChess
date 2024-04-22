@@ -43,6 +43,12 @@ class PlayerPiece:
         self.player = player
         self.piece = piece
 
+    def to_json(self):
+        return {
+            'player': self.player.name,
+            'piece': self.piece.name,
+        }
+
 class Board:
     """
     Holds a 2D array of PlayerPiece-s, x, y,
@@ -95,7 +101,8 @@ class Board:
 
 #TODO: use Python 3.10 and Literal Type (Literal['is_dark']) instead
 class IsDark:
-    pass
+    def to_json(self):
+        return 'is_dark'
 BoardViewCell = Union[PlayerPiece, IsDark, None]
 BoardView = list[list[BoardViewCell]]
 
