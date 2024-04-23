@@ -4,7 +4,12 @@ Session describes everything related to a game of two players:
 - the state of the game (board),
 - secrets (white, black, join).
 
-It's a simple container: it doesn't provide any secret protection logic
+Join secret is something that allows a player to join a specific game.
+White/black secrets should be kept safe, while join secret is intended
+to be passed to one player so that they can invite the other;
+hence, it can only be used once.
+
+Session a simple container: it doesn't provide any secret protection logic
 (should be implemented in the GameSessionsManager) or serialization.
 
 Current implementation implies that there's just one join_secret
