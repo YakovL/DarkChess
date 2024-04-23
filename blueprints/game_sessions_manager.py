@@ -32,3 +32,23 @@ class GameSessionsManager:
             return None
         return session.join_secret
 
+    def join_session(self, join_secret: str):
+        """
+        Get the player secret by join_secret.
+        Currently removes the join_secret right away so that it can't be used twice;
+        it also only allows to join via join_secret and not the black_secret.
+        Returns (black_secret, black_board_view)
+        """
+        session = self.storage.get_session_by_secret(join_secret)
+        if session is None:
+            return None
+
+        # Don't allow joining by player's secret: otherwise white could obtain it,
+        # pass to black as a join secret, and be able to see their view
+        if session.join_secret != join_secret:
+            return None
+
+        # If black loses the response, they won't be able to join
+        session.join_secret = None
+        return (session.black_secret, session.game_state.get_board_view(Player.black))
+
