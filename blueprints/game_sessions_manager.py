@@ -4,8 +4,23 @@ Application layer of the game
 See secrets' description in GameSession.
 """
 from typing import Union
+from dataclasses import dataclass
 from .game_domain.state import Player, BoardView
 from .storage import GameSessionsStorage
+
+@dataclass
+class PlayerViewAndStats:
+    """ A container of output data telling player "what's going on?" """
+    def __init__(self,
+                 player_view: BoardView,
+                 is_our_king_under_attack: bool,
+                 is_their_king_under_attack: bool,
+                 winner: Union[Player, None],
+                 ):
+        self.player_view = player_view
+        self.is_our_king_under_attack = is_our_king_under_attack
+        self.is_their_king_under_attack = is_their_king_under_attack
+        self.winner = winner
 
 class GameSessionsManager:
     """
