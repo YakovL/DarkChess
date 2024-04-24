@@ -67,3 +67,33 @@ class GameSessionsManager:
         session.join_secret = None
         return (session.black_secret, session.game_state.get_board_view(Player.black))
 
+    def get_player_view_and_stats(self, secret: str) -> Union[None, PlayerViewAndStats]:
+        """
+        "View" method for the player: gives all the necessary info about the game.
+        Can be used in polling, pushed via WS, or reused in methods like make_move.
+        Returns None when the session is not found by secret.
+        """
+        session = self.storage.get_session_by_secret(secret)
+        if session is None:
+            return None
+
+        is_black_king_under_attack = session.game_state.is_king_under_attack(Player.black)
+        is_white_king_under_attack = session.game_state.is_king_under_attack(Player.black)
+        is_black_checkmated = session.game_state.is_checkmated(Player.black)
+        is_white_checkmated = session.game_state.is_checkmated(Player.white)
+        winner = Player.white if is_black_checkmated else \
+            Player.black if is_white_checkmated else None
+
+        if session.black_secret == secret:
+            return PlayerViewAndStats(
+                session.game_state.get_board_view(Player.black),
+                is_black_king_under_attack,
+                is_white_king_under_attack,
+                winner)
+        if session.white_secret == secret:
+            return PlayerViewAndStats(
+                session.game_state.get_board_view(Player.white),
+                is_white_king_under_attack,
+                is_black_king_under_attack,
+                winner)
+

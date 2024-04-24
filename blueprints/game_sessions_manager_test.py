@@ -57,3 +57,15 @@ def test_join_session():
 
     join_secret_after_join = session_manager.get_join_secret(white_secret)
     assert join_secret_after_join is None
+
+def test_get_player_view_and_stats():
+    session_manager = GameSessionsManager()
+    white_secret, board_view__white = session_manager.create_session()
+
+    player_view_and_stats__white = session_manager.get_player_view_and_stats(white_secret)
+    assert player_view_and_stats__white is not None
+    assert to_json(player_view_and_stats__white.player_view) == to_json(board_view__white)
+    assert player_view_and_stats__white.is_their_king_under_attack is False
+    assert player_view_and_stats__white.is_our_king_under_attack is False
+    assert player_view_and_stats__white.winner is None
+
