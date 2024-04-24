@@ -31,7 +31,7 @@ Note: whites are on the bottom of the Board (y = 0, 1),
 board view is not rotated for blacks (should be done on UI level).
 """
 from enum import Enum
-from typing import Union, TypedDict
+from typing import TypedDict
 from dataclasses import dataclass
 from copy import deepcopy
 
@@ -88,7 +88,7 @@ class Board:
             raise Exception('no more than 32 pieces are expected')
         # validate more, if needed (number of pieces, etc)
 
-        self.cells: list[list[Union[PlayerPiece, None]]] = \
+        self.cells: list[list[PlayerPiece | None]] = \
             [[None for _ in range(8)] for _ in range(8)]
         for position in positions:
             player, piece, x, y = position
@@ -98,7 +98,7 @@ class Board:
 class IsDark:
     def to_json(self):
         return 'is_dark'
-BoardViewCell = Union[PlayerPiece, IsDark, None]
+BoardViewCell = PlayerPiece | IsDark | None
 BoardView = list[list[BoardViewCell]]
 
 class GameState:

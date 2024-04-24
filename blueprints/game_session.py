@@ -21,7 +21,6 @@ and moving generation of player secrets there from __init__.
 """
 
 import uuid
-from typing import Union
 from dataclasses import dataclass
 from .game_domain.state import GameState
 
@@ -30,7 +29,7 @@ class GameSession:
     """ {module_docstring} """
     def __init__(self):
         self.white_secret = str(uuid.uuid4())
-        self.join_secret: Union[str, None] = str(uuid.uuid4())
+        self.join_secret: str | None = str(uuid.uuid4())
         self.black_secret = str(uuid.uuid4())
         self.game_state = GameState()
 

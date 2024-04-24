@@ -2,7 +2,6 @@
 Simple in-memory storage of sessions.
 """
 
-from typing import Union
 from .game_session import GameSession
 
 class GameSessionsStorage:
@@ -18,7 +17,7 @@ class GameSessionsStorage:
         self.sessions.append(session)
         return session
 
-    def get_session_by_secret(self, secret: str) -> Union[GameSession, None]:
+    def get_session_by_secret(self, secret: str) -> GameSession | None:
         """ Find session by any secret (join, white, black) """
         for session in self.sessions:
             if secret in { session.white_secret, session.join_secret, session.black_secret }:

@@ -3,7 +3,6 @@ Application layer of the game
 
 See secrets' description in GameSession.
 """
-from typing import Union
 from dataclasses import dataclass
 from .game_domain.state import Player, BoardView
 from .storage import GameSessionsStorage
@@ -15,7 +14,7 @@ class PlayerViewAndStats:
                  player_view: BoardView,
                  is_our_king_under_attack: bool,
                  is_their_king_under_attack: bool,
-                 winner: Union[Player, None],
+                 winner: Player | None,
                  ):
         self.player_view = player_view
         self.is_our_king_under_attack = is_our_king_under_attack
@@ -40,7 +39,7 @@ class GameSessionsManager:
         session = self.storage.create_session()
         return (session.white_secret, session.game_state.get_board_view(Player.white))
 
-    def get_join_secret(self, white_secret: str) -> Union[str, None]:
+    def get_join_secret(self, white_secret: str) -> str | None:
         """ Finds a session by white_secret, returns join_secret or None if not found """
         session = self.storage.get_session_by_secret(white_secret)
         if session is None or session.white_secret != white_secret:
@@ -67,7 +66,7 @@ class GameSessionsManager:
         session.join_secret = None
         return (session.black_secret, session.game_state.get_board_view(Player.black))
 
-    def get_player_view_and_stats(self, secret: str) -> Union[None, PlayerViewAndStats]:
+    def get_player_view_and_stats(self, secret: str) -> PlayerViewAndStats | None:
         """
         "View" method for the player: gives all the necessary info about the game.
         Can be used in polling, pushed via WS, or reused in methods like make_move.
