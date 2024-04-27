@@ -15,7 +15,9 @@ def test_serializes_game_session():
 def test_serializes_player_view_and_stats():
     session = GameSession()
     board_view__black = session.game_state.get_board_view(Player.black)
-    player_view_and_stats = PlayerViewAndStats(board_view__black, False, False, None)
+    player_view_and_stats = PlayerViewAndStats(
+        board_view__black,
+        Player.black, False, False, False, None)
 
     player_view_and_stats_json = to_json(player_view_and_stats)
 
