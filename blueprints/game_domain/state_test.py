@@ -123,6 +123,8 @@ def test_promote():
         (Player.black, Piece.king, 4, 7),
         (Player.black, Piece.bishop, 6, 0),
     ]))
+    game_state.is_waiting_for_promotion = True
+
     # empty cell
     assert game_state.promote(Player.white, 0, 3, Piece.queen) is False
     # not their piece
@@ -135,12 +137,15 @@ def test_promote():
     assert game_state.promote(Player.white, 0, 7, Piece.king) is False
     # not a pawn
     assert game_state.promote(Player.black, 6, 0, Piece.queen) is False
+    # none of the above is a valid promotion, so doesn't update this
+    assert game_state.is_waiting_for_promotion is True
 
     # correct promotion
     assert game_state.promote(Player.white, 0, 7, Piece.queen) is True
     updated_cell = game_state.get_board().cells[0][7]
     assert updated_cell is not None
     assert updated_cell.piece == Piece.queen
+    assert game_state.is_waiting_for_promotion is False
 
 def test_get_board_view():
     """

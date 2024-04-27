@@ -105,6 +105,7 @@ class GameState:
     """ Init with a standard game position by default """
     def __init__(self, whos_turn: Player = Player.white, board_position: Board = Board()):
         self._whos_turn = whos_turn
+        self.is_waiting_for_promotion = False
         self._board = board_position
     def get_whos_turn(self) -> Player:
         """ Get who's turn it is (only maks sense if there's no winner or draw) """
@@ -186,6 +187,9 @@ class GameState:
            x_to == x_from and y_to == y_from or \
            cell_to is not None and cell_to.player == whos_turn:
             return False
+        # already moved, has to promote
+        if self.is_waiting_for_promotion:
+            return False
         # shouldn't put their king under attack
         if not is_virtual:
             state_after_move = self.make_virtual_move(x_from, y_from, x_to, y_to)
@@ -244,11 +248,18 @@ class GameState:
         # incorrect input
         return False
 
+    def _pass_turn(self) -> None:
+        self._whos_turn = Player.black if self._whos_turn == Player.white \
+            else Player.white
+
     def make_move(self, x_from: int, y_from: int, x_to: int, y_to: int) -> None:
         """
         Change the state accordingly (without validation, as it would produce an infinite loop).
         Doesn't promote pawns, should be done separately.
         """
+        if self.is_waiting_for_promotion:
+            return
+
         moving_piece = self._board.cells[x_from][y_from]
         if moving_piece is None:
             return
@@ -259,8 +270,12 @@ class GameState:
         self._board.cells[x_to][y_to] = moving_piece
         self._board.cells[x_from][y_from] = None
 
-        self._whos_turn = Player.black if self._whos_turn == Player.white else Player.white
-    #TODO: implement promotion separately
+        self.is_waiting_for_promotion = moving_piece.piece == Piece.pawn and \
+            (y_to == 0 and moving_piece.player == Player.black or \
+             y_to == 7 and moving_piece.player == Player.white)
+
+        if not self.is_waiting_for_promotion:
+            self._pass_turn()
 
     def make_virtual_move(self, x_from: int, y_from: int, x_to: int, y_to: int) -> 'GameState':
         """ Create a new GameState, make the move in it, and return it """
@@ -287,11 +302,14 @@ class GameState:
                             return False
 
         return True
+
     def promote(self, player: Player, x: int, y: int, piece: Piece) -> bool:
         """
         Promotes a pawn if it is in the given cell, is owned by the given player, etc.
         Returns True if everything is correct and the promotion was done (False otherwise).
         """
+        # not checking self.is_waiting_for_promotion since checking conditions for it
+
         cell = self._board.cells[x][y]
 
         # should be their pawn
@@ -307,6 +325,8 @@ class GameState:
             return False
 
         self._board.cells[x][y] = PlayerPiece(player, piece)
+        self.is_waiting_for_promotion = False
+        self._pass_turn()
         return True
 
     def get_board_view(self, player: Player) -> BoardView:
