@@ -97,3 +97,26 @@ class GameSessionsManager:
                 is_white_king_under_attack if is_black else is_black_king_under_attack,
                 winner)
 
+        return None
+
+    def validate_move(self,
+                      secret: str,
+                      x_from: int,
+                      y_from: int,
+                      x_to: int,
+                      y_to: int) -> GameSession | None:
+        """
+        Checks move validity: returns None when invalid, session otherwise
+        """
+        session = self.storage.get_session_by_secret(secret)
+        if session is None:
+            return None
+
+        whos_turn = session.game_state.get_whos_turn()
+        if whos_turn == Player.white and session.white_secret != secret or \
+           whos_turn == Player.black and session.black_secret != secret:
+            return None
+
+        if session.game_state.is_move_valid(whos_turn, x_from, y_from, x_to, y_to):
+            return session
+        return None

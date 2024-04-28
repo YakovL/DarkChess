@@ -69,3 +69,30 @@ def test_get_player_view_and_stats():
     assert player_view_and_stats__white.is_our_king_under_attack is False
     assert player_view_and_stats__white.winner is None
 
+def test_validate_move():
+    session_manager = GameSessionsManager()
+    white_secret, _ = session_manager.create_session()
+    join_secret = session_manager.get_join_secret(white_secret)
+    if not join_secret:
+        raise ValueError('join_secret is None')
+    join_result = session_manager.join_session(join_secret)
+    if not join_result:
+        raise ValueError('join_result is None')
+    black_secret = join_result[0]
+
+    # wrong secret shouldn't work
+    assert session_manager.validate_move('some garbage', 0, 1, 0, 2) is None
+    # join_secret shouldn't work
+    assert session_manager.validate_move(join_secret, 0, 1, 0, 2) is None
+    # other player's secret shouldn't work
+    assert session_manager.validate_move(black_secret, 0, 1, 0, 2) is None
+
+    # not their turn
+    assert session_manager.validate_move(black_secret, 0, 6, 0, 5) is None
+
+    # incorrect (pawn) move
+    assert session_manager.validate_move(white_secret, 0, 1, 1, 2) is None
+
+    # an example of a valid move
+    assert session_manager.validate_move(white_secret, 0, 1, 0, 2) is not None
+
