@@ -120,3 +120,26 @@ class GameSessionsManager:
         if session.game_state.is_move_valid(whos_turn, x_from, y_from, x_to, y_to):
             return session
         return None
+
+    def _make_move_get_session(self,
+                               secret: str,
+                               x_from: int,
+                               y_from: int,
+                               x_to: int,
+                               y_to: int) -> GameSession | None:
+        session = self.validate_move(secret, x_from, y_from, x_to, y_to)
+        if not session:
+            return None
+
+        session.game_state.make_move(x_from, y_from, x_to, y_to)
+        return session
+
+    def make_move(self, secret: str, x_from: int, y_from: int, x_to: int, y_to: int):
+        """ Validate the move, make if valid, return PlayerViewAndStats """
+        session = self._make_move_get_session(secret, x_from, y_from, x_to, y_to)
+        if not session:
+            return None
+
+        #TODO (perf): instead of getting session by secret again, overload get_player_view_and_stats and
+        # pass the session (should return result for whos_turn)
+        return self.get_player_view_and_stats(secret)

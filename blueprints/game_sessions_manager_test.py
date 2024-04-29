@@ -1,5 +1,6 @@
 from .game_sessions_manager import GameSessionsManager
 from .serialization import to_json
+from .game_domain.state import Player, IsDark
 
 def test_create_session():
     session_manager = GameSessionsManager()
@@ -92,7 +93,33 @@ def test_validate_move():
 
     # incorrect (pawn) move
     assert session_manager.validate_move(white_secret, 0, 1, 1, 2) is None
+    # a non-move
+    assert session_manager.validate_move(white_secret, 0, 1, 0, 1) is None
 
     # an example of a valid move
     assert session_manager.validate_move(white_secret, 0, 1, 0, 2) is not None
 
+def test_make_move():
+    session_manager = GameSessionsManager()
+    white_secret, _ = session_manager.create_session()
+
+    # an incorrect move (i.e. validation is used before applying)
+    assert session_manager.make_move(white_secret, 0, 1, 1, 2) is None
+
+    # a valid move
+    x_from = 0
+    y_from = 1
+    x_to = 0
+    y_to = 2
+    move_result = session_manager.make_move(white_secret, x_from, y_from, x_to, y_to)
+    assert move_result is not None
+    assert move_result.whos_turn is Player.black
+
+    in_cell_where_moved = move_result.player_view[x_to][y_to]
+    assert in_cell_where_moved is not None
+    assert isinstance(in_cell_where_moved, IsDark) is False
+    if isinstance(in_cell_where_moved, IsDark):
+        raise ValueError('in_cell_where_moved is dark, expected a piece')
+    assert in_cell_where_moved.player is Player.white
+
+    assert move_result.player_view[x_from][y_from] is None
