@@ -5,7 +5,7 @@ See secrets' description in GameSession.
 """
 from dataclasses import dataclass
 from .game_domain.state import Player, BoardView
-from .storage import GameSessionsStorage
+from .storage import IGameSessionStorage
 from .game_session import GameSession
 
 @dataclass
@@ -31,7 +31,7 @@ class GameSessionsManager:
     Exposes application methods like creating a session,
     joining it and making a move, to the framework (API, WS or any other)
     """
-    def __init__(self, storage: GameSessionsStorage):
+    def __init__(self, storage: IGameSessionStorage):
         self.storage = storage
 
     def create_session(self) -> tuple[str, BoardView]:
