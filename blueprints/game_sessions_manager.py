@@ -4,7 +4,7 @@ Application layer of the game
 See secrets' description in GameSession.
 """
 from dataclasses import dataclass
-from .game_domain.state import Player, BoardView
+from .game_domain.state import Player, Piece, BoardView
 from .storage import IGameSessionStorage
 from .game_session import GameSession
 
@@ -103,9 +103,7 @@ class GameSessionsManager:
                       y_from: int,
                       x_to: int,
                       y_to: int) -> GameSession | None:
-        """
-        Checks move validity: returns None when invalid, session otherwise
-        """
+        """ Checks move validity: returns None when invalid, session otherwise """
         session = self.storage.get_session_by_secret(secret)
         if session is None:
             return None
@@ -141,3 +139,16 @@ class GameSessionsManager:
         #TODO (perf): instead of getting session by secret again, overload get_player_view_and_stats and
         # pass the session (should return result for whos_turn)
         return self.get_player_view_and_stats(secret)
+
+    def promote(self, secret: str, x: int, y: int, piece: Piece):
+        """ Try to promote, return PlayerViewAndStats on success or None on failure """
+        session = self.storage.get_session_by_secret(secret)
+        if session is None:
+            return None
+        if not secret in (session.black_secret, session.white_secret):
+            return None
+
+        player = Player.black if session.black_secret == secret else Player.white
+        success = session.game_state.promote(player, x, y, piece)
+
+        return self.get_player_view_and_stats(secret) if success else None

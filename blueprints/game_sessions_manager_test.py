@@ -1,7 +1,7 @@
 from .game_sessions_manager import GameSessionsManager
 from .storage import GameSessionsStorage
 from .serialization import to_json
-from .game_domain.state import Player, IsDark
+from .game_domain.state import Player, Piece, IsDark
 
 def test_create_session():
     session_manager = GameSessionsManager(GameSessionsStorage())
@@ -28,9 +28,7 @@ def test_get_join_secret():
     join_secret_again = session_manager.get_join_secret(white_secret)
     assert join_secret_again == join_secret
 
-    non_existing_secret = 'some garbage'
-    join_secret = session_manager.get_join_secret(non_existing_secret)
-    assert join_secret is None
+    assert session_manager.get_join_secret('some garbage') is None
 
 def test_join_session():
     session_manager = GameSessionsManager(GameSessionsStorage())
@@ -39,12 +37,9 @@ def test_join_session():
     if join_secret is None:
         raise ValueError('join_secret is None')
 
-    non_existing_secret = 'some garbage'
-    result = session_manager.join_session(non_existing_secret)
-    assert result is None
+    assert session_manager.join_session('some garbage') is None
 
-    result = session_manager.join_session(white_secret)
-    assert result is None
+    assert session_manager.join_session(white_secret) is None
 
     # should return a BoardView and a secret, like create_session
     result = session_manager.join_session(join_secret)
@@ -124,3 +119,11 @@ def test_make_move():
     assert in_cell_where_moved.player is Player.white
 
     assert move_result.player_view[x_from][y_from] is None
+
+def test_promote():
+    session_manager = GameSessionsManager(GameSessionsStorage())
+
+    assert session_manager.promote('some garbage', 0, 0, Piece.queen) is None
+
+    #TODO: implement using a mock (like from unittest.mock import Mock):
+    # test that GameState.promote is called, with correct args and return value is passed correctly
