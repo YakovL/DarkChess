@@ -31,8 +31,8 @@ class GameSessionsManager:
     Exposes application methods like creating a session,
     joining it and making a move, to the framework (API, WS or any other)
     """
-    def __init__(self):
-        self.storage = GameSessionsStorage()
+    def __init__(self, storage: GameSessionsStorage):
+        self.storage = storage
 
     def create_session(self) -> tuple[str, BoardView]:
         """

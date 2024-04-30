@@ -1,9 +1,10 @@
 from .game_sessions_manager import GameSessionsManager
+from .storage import GameSessionsStorage
 from .serialization import to_json
 from .game_domain.state import Player, IsDark
 
 def test_create_session():
-    session_manager = GameSessionsManager()
+    session_manager = GameSessionsManager(GameSessionsStorage())
 
     # should return a BoardView and a secret (not None; other things are tested in GameState)
     white_secret, board_view__white = session_manager.create_session()
@@ -16,7 +17,7 @@ def test_create_session():
     assert to_json(board_view__white) == to_json(board_view__white_2)
 
 def test_get_join_secret():
-    session_manager = GameSessionsManager()
+    session_manager = GameSessionsManager(GameSessionsStorage())
     white_secret, _ = session_manager.create_session()
 
     join_secret = session_manager.get_join_secret(white_secret)
@@ -32,7 +33,7 @@ def test_get_join_secret():
     assert join_secret is None
 
 def test_join_session():
-    session_manager = GameSessionsManager()
+    session_manager = GameSessionsManager(GameSessionsStorage())
     white_secret, board_view__white = session_manager.create_session()
     join_secret = session_manager.get_join_secret(white_secret)
     if join_secret is None:
@@ -60,7 +61,7 @@ def test_join_session():
     assert join_secret_after_join is None
 
 def test_get_player_view_and_stats():
-    session_manager = GameSessionsManager()
+    session_manager = GameSessionsManager(GameSessionsStorage())
     white_secret, board_view__white = session_manager.create_session()
 
     player_view_and_stats__white = session_manager.get_player_view_and_stats(white_secret)
@@ -71,7 +72,7 @@ def test_get_player_view_and_stats():
     assert player_view_and_stats__white.winner is None
 
 def test_validate_move():
-    session_manager = GameSessionsManager()
+    session_manager = GameSessionsManager(GameSessionsStorage())
     white_secret, _ = session_manager.create_session()
     join_secret = session_manager.get_join_secret(white_secret)
     if not join_secret:
@@ -100,7 +101,7 @@ def test_validate_move():
     assert session_manager.validate_move(white_secret, 0, 1, 0, 2) is not None
 
 def test_make_move():
-    session_manager = GameSessionsManager()
+    session_manager = GameSessionsManager(GameSessionsStorage())
     white_secret, _ = session_manager.create_session()
 
     # an incorrect move (i.e. validation is used before applying)
