@@ -6,6 +6,7 @@ See secrets' description in GameSession.
 from dataclasses import dataclass
 from .game_domain.state import Player, BoardView
 from .storage import GameSessionsStorage
+from .game_session import GameSession
 
 @dataclass
 class PlayerViewAndStats:
