@@ -79,25 +79,22 @@ class GameSessionsManager:
         session = self.storage.get_session_by_secret(secret)
         if session is None:
             return None
+        if not secret in (session.black_secret, session.white_secret):
+            return None
+        us = Player.black if secret == session.black_secret else Player.white
+        them = Player.white if secret == session.black_secret else Player.black
 
-        is_black_king_under_attack = session.game_state.is_king_under_attack(Player.black)
-        is_white_king_under_attack = session.game_state.is_king_under_attack(Player.black)
-        is_black_checkmated = session.game_state.is_checkmated(Player.black)
-        is_white_checkmated = session.game_state.is_checkmated(Player.white)
-        winner = Player.white if is_black_checkmated else \
-            Player.black if is_white_checkmated else None
+        winner = Player.white if session.game_state.is_checkmated(Player.black) else \
+                 Player.black if session.game_state.is_checkmated(Player.white) else \
+                 None
 
-        if secret in (session.black_secret, session.white_secret):
-            is_black = secret == session.black_secret
-            return PlayerViewAndStats(
-                session.game_state.get_board_view(Player.black if is_black else Player.white),
-                session.game_state.get_whos_turn(),
-                session.game_state.is_waiting_for_promotion,
-                is_black_king_under_attack if is_black else is_white_king_under_attack,
-                is_white_king_under_attack if is_black else is_black_king_under_attack,
-                winner)
-
-        return None
+        return PlayerViewAndStats(
+            session.game_state.get_board_view(us),
+            session.game_state.get_whos_turn(),
+            session.game_state.is_waiting_for_promotion,
+            session.game_state.is_king_under_attack(us),
+            session.game_state.is_king_under_attack(them),
+            winner)
 
     def validate_move(self,
                       secret: str,
