@@ -38,6 +38,7 @@ from copy import deepcopy
 Player = Enum('Player', 'white black')
 Piece = Enum('Piece', 'pawn rook bishop knight queen king')
 
+# unlike TypedDict, dataclass makes Enum props json-serializable
 @dataclass
 class PlayerPiece:
     """ Black bishop, etc. """
