@@ -1,4 +1,3 @@
-import json
 from .serialization import to_json
 from .game_session import GameSession
 from .game_sessions_manager import PlayerViewAndStats
@@ -9,8 +8,8 @@ def test_serializes_game_session():
 
     session_json = to_json(session)
 
-    assert json is not None
     assert isinstance(session_json, str)
+    assert session_json != '{}'
 
 def test_serializes_player_view_and_stats():
     session = GameSession()
@@ -21,5 +20,5 @@ def test_serializes_player_view_and_stats():
 
     player_view_and_stats_json = to_json(player_view_and_stats)
 
-    assert json is not None
     assert isinstance(player_view_and_stats_json, str)
+    assert player_view_and_stats_json != '{}'

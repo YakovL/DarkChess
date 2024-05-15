@@ -108,6 +108,14 @@ class GameState:
         self._whos_turn = whos_turn
         self.is_waiting_for_promotion = False
         self._board = board_position
+    def to_dict(self):
+        """ For JSON serialization """
+        return {
+            'is_waiting_for_promotion': self.is_waiting_for_promotion,
+            'whos_turn': self._whos_turn.name,
+            'board': self._board
+        }
+
     def get_whos_turn(self) -> Player:
         """ Get who's turn it is (only maks sense if there's no winner or draw) """
         return self._whos_turn

@@ -27,9 +27,13 @@ from .game_domain.state import GameState
 @dataclass
 class GameSession:
     """ {module_docstring} """
+    white_secret: str
+    join_secret: str | None
+    black_secret: str
+    game_state: GameState
     def __init__(self):
         self.white_secret = str(uuid.uuid4())
-        self.join_secret: str | None = str(uuid.uuid4())
+        self.join_secret = str(uuid.uuid4())
         self.black_secret = str(uuid.uuid4())
         self.game_state = GameState()
 

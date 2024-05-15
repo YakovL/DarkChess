@@ -11,20 +11,12 @@ from .game_session import GameSession
 @dataclass
 class PlayerViewAndStats:
     """ A container of output data telling player "what's going on?" """
-    def __init__(self,
-                 player_view: BoardView,
-                 whos_turn: Player,
-                 is_waiting_for_promotion: bool,
-                 is_our_king_under_attack: bool,
-                 is_their_king_under_attack: bool,
-                 winner: Player | None,
-                 ):
-        self.player_view = player_view
-        self.whos_turn = whos_turn
-        self.is_waiting_for_promotion = is_waiting_for_promotion
-        self.is_our_king_under_attack = is_our_king_under_attack
-        self.is_their_king_under_attack = is_their_king_under_attack
-        self.winner = winner
+    player_view: BoardView
+    whos_turn: Player
+    is_waiting_for_promotion: bool
+    is_our_king_under_attack: bool
+    is_their_king_under_attack: bool
+    winner: Player | None
 
 class GameSessionsManager:
     """
