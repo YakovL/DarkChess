@@ -51,40 +51,43 @@ class Board:
     can be initialized with a list of (player, piece, x, y).
     If the positions list is omitted, the start game position is used.
     """
-    def __init__(self, positions: list[tuple[Player, Piece, int, int]] = [
-        (Player.white, Piece.rook, 0, 0),
-        (Player.white, Piece.knight, 1, 0),
-        (Player.white, Piece.bishop, 2, 0),
-        (Player.white, Piece.king, 3, 0),
-        (Player.white, Piece.queen, 4, 0),
-        (Player.white, Piece.bishop, 5, 0),
-        (Player.white, Piece.knight, 6, 0),
-        (Player.white, Piece.rook, 7, 0),
-        (Player.white, Piece.pawn, 0, 1),
-        (Player.white, Piece.pawn, 1, 1),
-        (Player.white, Piece.pawn, 2, 1),
-        (Player.white, Piece.pawn, 3, 1),
-        (Player.white, Piece.pawn, 4, 1),
-        (Player.white, Piece.pawn, 5, 1),
-        (Player.white, Piece.pawn, 6, 1),
-        (Player.white, Piece.pawn, 7, 1),
-        (Player.black, Piece.pawn, 0, 6),
-        (Player.black, Piece.pawn, 1, 6),
-        (Player.black, Piece.pawn, 2, 6),
-        (Player.black, Piece.pawn, 3, 6),
-        (Player.black, Piece.pawn, 4, 6),
-        (Player.black, Piece.pawn, 5, 6),
-        (Player.black, Piece.pawn, 6, 6),
-        (Player.black, Piece.pawn, 7, 6),
-        (Player.black, Piece.rook, 0, 7),
-        (Player.black, Piece.knight, 1, 7),
-        (Player.black, Piece.bishop, 2, 7),
-        (Player.black, Piece.king, 3, 7),
-        (Player.black, Piece.queen, 4, 7),
-        (Player.black, Piece.bishop, 5, 7),
-        (Player.black, Piece.knight, 6, 7),
-        (Player.black, Piece.rook, 7, 7),
-    ]):
+    def __init__(self, positions: list[tuple[Player, Piece, int, int]] | None = None):
+        if not positions:
+            positions = [
+                (Player.white, Piece.rook, 0, 0),
+                (Player.white, Piece.knight, 1, 0),
+                (Player.white, Piece.bishop, 2, 0),
+                (Player.white, Piece.king, 3, 0),
+                (Player.white, Piece.queen, 4, 0),
+                (Player.white, Piece.bishop, 5, 0),
+                (Player.white, Piece.knight, 6, 0),
+                (Player.white, Piece.rook, 7, 0),
+                (Player.white, Piece.pawn, 0, 1),
+                (Player.white, Piece.pawn, 1, 1),
+                (Player.white, Piece.pawn, 2, 1),
+                (Player.white, Piece.pawn, 3, 1),
+                (Player.white, Piece.pawn, 4, 1),
+                (Player.white, Piece.pawn, 5, 1),
+                (Player.white, Piece.pawn, 6, 1),
+                (Player.white, Piece.pawn, 7, 1),
+                (Player.black, Piece.pawn, 0, 6),
+                (Player.black, Piece.pawn, 1, 6),
+                (Player.black, Piece.pawn, 2, 6),
+                (Player.black, Piece.pawn, 3, 6),
+                (Player.black, Piece.pawn, 4, 6),
+                (Player.black, Piece.pawn, 5, 6),
+                (Player.black, Piece.pawn, 6, 6),
+                (Player.black, Piece.pawn, 7, 6),
+                (Player.black, Piece.rook, 0, 7),
+                (Player.black, Piece.knight, 1, 7),
+                (Player.black, Piece.bishop, 2, 7),
+                (Player.black, Piece.king, 3, 7),
+                (Player.black, Piece.queen, 4, 7),
+                (Player.black, Piece.bishop, 5, 7),
+                (Player.black, Piece.knight, 6, 7),
+                (Player.black, Piece.rook, 7, 7),
+            ]
+
         if len(positions) > 32:
             raise Exception('no more than 32 pieces are expected')
         # validate more, if needed (number of pieces, etc)
@@ -104,10 +107,10 @@ BoardView = list[list[BoardViewCell]]
 
 class GameState:
     """ Init with a standard game position by default """
-    def __init__(self, whos_turn: Player = Player.white, board_position: Board = Board()):
+    def __init__(self, whos_turn: Player = Player.white, board_position: Board | None = None):
         self._whos_turn = whos_turn
         self.is_waiting_for_promotion = False
-        self._board = board_position
+        self._board = board_position if board_position else Board()
     def to_dict(self):
         """ For JSON serialization """
         return {
