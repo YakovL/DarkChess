@@ -45,6 +45,7 @@ class PlayerPiece:
     player: Player
     piece: Piece
 
+@dataclass
 class Board:
     """
     Holds a 2D array of PlayerPiece-s, x, y,
