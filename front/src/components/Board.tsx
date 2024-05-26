@@ -12,6 +12,29 @@ interface ICellProps {
 const BoardCell = ({
   inside, x, y, onClick, isSelected
 }: ICellProps) => {
+  const displayPiece = (piece: Piece, player: Player) => (
+    // TODO: get pictures for pieces, render
+    // TODO: map color instead of using inside.player directly
+    <span style={{ color: player }}>
+      {(piece == 'knight' ? 'n' : piece[0]).toUpperCase()}
+    </span>
+  )
+
+  return (
+    <div
+      title={`${x},${y}`}
+      className={
+        // TODO: pick colors more consistently
+        `${classes.cell} ${
+          inside == 'is_dark' ? classes.cell_dark : (x + y) % 2 == 0 ? classes.cell_odd : classes.cell_even
+        } ${
+          isSelected ? classes.cell_selected : ''
+        }`}
+      onClick={onClick}
+    >
+      {inside && inside != 'is_dark' && displayPiece(inside.piece, inside.player)}
+    </div>
+  )
 }
 
 interface IBoardProps {
