@@ -233,8 +233,8 @@ class GameState:
 
         if cell_from.piece == Piece.pawn:
             # only correct direction
-            if whos_turn == Player.white and y_to < y_from or \
-               whos_turn == Player.black and y_to > y_from:
+            if whos_turn == Player.white and y_to <= y_from or \
+               whos_turn == Player.black and y_to >= y_from:
                 return False
 
             # move forward
