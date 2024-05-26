@@ -1,0 +1,19 @@
+.board {
+  margin: 1em;
+  display: grid;
+  grid-template-columns: repeat(8, 40px);
+  grid-template-rows: repeat(8, 40px);
+}
+
+.cell_dark {
+  background: #736c93;
+}
+.cell_odd {
+  background: #ab7b59;
+}
+.cell_even {
+  background: #e0c5a6;
+}
+.cell_selected {
+  background-color: yellow;
+}
