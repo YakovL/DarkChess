@@ -99,11 +99,7 @@ class Board:
             player, piece, x, y = position
             self.cells[x][y] = PlayerPiece(player, piece)
 
-#TODO: use Python 3.10 and Literal Type (Literal['is_dark']) instead
-class IsDark:
-    def to_json(self):
-        return 'is_dark'
-BoardViewCell = PlayerPiece | IsDark | None
+BoardViewCell = PlayerPiece | Literal['is_dark'] | None
 BoardView = list[list[BoardViewCell]]
 
 class GameState:
@@ -380,7 +376,7 @@ class GameState:
         for x in range(8):
             for y in range(8):
                 if not visibility_mask[x][y]:
-                    view[x][y] = IsDark()
+                    view[x][y] = 'is_dark'
 
         return view
 

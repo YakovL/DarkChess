@@ -3,7 +3,6 @@ from state import (
     Board,
     Player,
     Piece,
-    IsDark,
 )
 
 def test_init():
@@ -157,9 +156,8 @@ def test_get_board_view():
 
     for x in range(8):
         for y in range(4):
-            assert not isinstance(board_view_white[x][y], IsDark)
-            assert isinstance(board_view_black[x][y], IsDark)
+            assert board_view_white[x][y] != 'is_dark'
+            assert board_view_black[x][y] == 'is_dark'
         for y in range(4, 8):
-            assert isinstance(board_view_white[x][y], IsDark)
-            assert not isinstance(board_view_black[x][y], IsDark)
-
+            assert board_view_white[x][y] == 'is_dark'
+            assert board_view_black[x][y] != 'is_dark'
