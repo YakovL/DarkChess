@@ -31,7 +31,7 @@ Note: whites are on the bottom of the Board (y = 0, 1),
 board view is not rotated for blacks (should be done on UI level).
 """
 from enum import Enum
-from typing import TypedDict
+from typing import TypedDict, Literal
 from dataclasses import dataclass
 from copy import deepcopy
 
@@ -52,6 +52,7 @@ class Board:
     can be initialized with a list of (player, piece, x, y).
     If the positions list is omitted, the start game position is used.
     """
+    cells: list[list[PlayerPiece | None]]
     def __init__(self, positions: list[tuple[Player, Piece, int, int]] | None = None):
         if not positions:
             positions = [
@@ -93,8 +94,7 @@ class Board:
             raise Exception('no more than 32 pieces are expected')
         # validate more, if needed (number of pieces, etc)
 
-        self.cells: list[list[PlayerPiece | None]] = \
-            [[None for _ in range(8)] for _ in range(8)]
+        self.cells = [[None for _ in range(8)] for _ in range(8)]
         for position in positions:
             player, piece, x, y = position
             self.cells[x][y] = PlayerPiece(player, piece)
