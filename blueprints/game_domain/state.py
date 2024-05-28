@@ -369,6 +369,18 @@ class GameState:
                     if piece['x'] == x and piece['y'] == y:
                         visibility_mask[x][y] = True
                         continue
+
+                    # a pawn should see ahead and lateral neighbors
+                    #TODO: add a feature toggle (maybe to session, and let users decide)
+                    if piece['piece'] == Piece.pawn and abs(piece['x'] - x) <= 1:
+                        is_lateral_neighbor = y - piece['y'] == 0
+                        is_ahead = player == Player.white and y - piece['y'] == 1 or \
+                                           player == Player.black and y - piece['y'] == -1
+                        if is_lateral_neighbor or is_ahead:
+                            visibility_mask[x][y] = True
+                            continue
+
+                    # checking "can move to it" after simpler checks
                     if self.is_move_valid(player, piece['x'], piece['y'], x, y, is_virtual=True):
                         visibility_mask[x][y] = True
 
