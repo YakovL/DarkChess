@@ -88,8 +88,18 @@ export default function Board({
   return (
     <div className={classes.board}>
       {// rendering goes from top to bottom, in reverse to the y axis
-      [7, 6, 5, 4, 3, 2, 1, 0].map(y =>
-        [0, 1, 2, 3, 4, 5, 6, 7].map(x =>
+      (['top', 7, 6, 5, 4, 3, 2, 1, 0, 'bottom'] as const).map(y =>
+        (['left', 0, 1, 2, 3, 4, 5, 6, 7, 'right'] as const).map(x =>
+          // gutters
+          x == 'left' || x == 'right' ?
+          <div className={classes.gutter}>{
+            typeof y == 'number' ? y : ''
+          }</div> :
+          y == 'top' || y == 'bottom' ?
+          <div className={classes.gutter}>{
+            typeof x == 'number' ? String.fromCharCode('A'.charCodeAt(0) + x) : ''
+          }</div> :
+
           <BoardCell
             key={`${x},${y}`}
             x={x} y={y}

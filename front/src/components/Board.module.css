@@ -1,10 +1,20 @@
 .board {
   margin: 1em;
   display: grid;
-  grid-template-columns: repeat(8, 40px);
-  grid-template-rows: repeat(8, 40px);
+  grid-template-columns: 20px repeat(8, 40px) 20px;
+  grid-template-rows: 20px repeat(8, 40px) 20px;
 }
 
+.gutter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .cell_dark {
   background: #527742;
 }
