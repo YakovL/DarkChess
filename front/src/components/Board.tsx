@@ -114,7 +114,7 @@ export default function Board({
           // gutters
           x == 'left' || x == 'right' ?
           <div className={classes.gutter}>{
-            typeof y == 'number' ? y : ''
+            typeof y == 'number' ? y + 1 : ''
           }</div> :
           y == 'top' || y == 'bottom' ?
           <div className={classes.gutter}>{
