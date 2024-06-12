@@ -1,0 +1,16 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-back:
+    runs-on: ubuntu-latest
+    steps:
+    - name: connect via SSH and deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd ~/prod/darkchess/back/
+          git pull
