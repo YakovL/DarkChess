@@ -13,4 +13,4 @@ Development
 -----------
 1. activate venv (like `.\dark_chess_venv\Scripts\activate`)
 2. start `ptw` and prefer TDD
-3. use `flask --app darkchess run --debug` to run server in the watch code mode
+3. use `flask run --debug` to run server in the watch code mode
