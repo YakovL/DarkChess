@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Player, Piece, CellContent } from '../model'
+import { Player, Piece, CellContent } from '../data/model'
 import classes from './board.module.css'
 
 interface ICellProps {

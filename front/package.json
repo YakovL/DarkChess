@@ -1,0 +1,7 @@
+{
+  "name": "darkchess-front",
+  "dependencies": {
+    "react": "^18",
+    "zustand": "^4.5.2"
+  }
+}
