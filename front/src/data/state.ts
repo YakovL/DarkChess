@@ -49,3 +49,12 @@ export const refresh = (
   winner,
   playerColor: playerColor || state.playerColor,
 }))
+
+export const useGameStoreBit = {
+  PlayerSecret: () => useGameStore((state) => state.playerSecret),
+  PlayerColor: () => useGameStore((state) => state.playerColor),
+  BoardCells: () => useGameStore((state) => state.boardCells),
+  IsOurTurn: () => useGameStore((state) => state.isOurTurn),
+  JoinSecretToShare: () => useGameStore((state) => state.joinSecretToShare),
+  Winner: () => useGameStore((state) => state.winner),
+}
