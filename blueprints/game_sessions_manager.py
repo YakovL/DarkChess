@@ -12,6 +12,7 @@ from .game_session import GameSession
 class PlayerViewAndStats:
     """ A container of output data telling player "what's going on?" """
     player_view: BoardView
+    player: Player
     whos_turn: Player
     is_waiting_for_promotion: bool
     is_our_king_under_attack: bool
@@ -83,6 +84,7 @@ class GameSessionsManager:
 
         return PlayerViewAndStats(
             session.game_state.get_board_view(us),
+            us,
             session.game_state.get_whos_turn(),
             session.game_state.is_waiting_for_promotion,
             session.game_state.is_king_under_attack(us),
