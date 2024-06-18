@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { router } from './statePersistance'
 import { Player, CellContent } from './model'
 
 // TODO: add isWaitingForPromotion, set in setGameState, updateAfterMove
@@ -27,14 +28,19 @@ export const setGameState = (
   joinSecretToShare: GameState['joinSecretToShare'],
   isOurTurn: GameState['isOurTurn'],
   winner?: GameState['winner'],
-) => useGameStore.setState(() => ({
-  playerSecret,
-  playerColor,
-  boardCells,
-  joinSecretToShare,
-  isOurTurn,
-  winner: winner || null,
-}))
+) => useGameStore.setState(() => {
+  // later: try to separate into a middleware instead
+  router.setValue('game', playerSecret)
+
+  return {
+    playerSecret,
+    playerColor,
+    boardCells,
+    joinSecretToShare,
+    isOurTurn,
+    winner: winner || null,
+  }
+})
 
 // method for resuming a game or updating the state after a move
 // set and setState functions _merge_ state (not deeply, though)
@@ -51,10 +57,10 @@ export const refresh = (
 }))
 
 export const useGameStoreBit = {
-  PlayerSecret: () => useGameStore((state) => state.playerSecret),
+  PlayerSecret: () => useGameStore((state) => router.getValue('game') || state.playerSecret),
   PlayerColor: () => useGameStore((state) => state.playerColor),
   BoardCells: () => useGameStore((state) => state.boardCells),
   IsOurTurn: () => useGameStore((state) => state.isOurTurn),
-  JoinSecretToShare: () => useGameStore((state) => state.joinSecretToShare),
+  JoinSecretToShare: () => useGameStore((state) => router.getValue('join') || state.joinSecretToShare),
   Winner: () => useGameStore((state) => state.winner),
 }
