@@ -36,13 +36,16 @@ export const setGameState = (
   winner: winner || null,
 }))
 
+// method for resuming a game or updating the state after a move
 // set and setState functions _merge_ state (not deeply, though)
-export const updateAfterMove = (
+export const refresh = (
   boardCells: CellContent[][],
   whosTurn: Player,
   winner: GameState['winner'],
+  playerColor?: Player,
 ) => useGameStore.setState((state: GameState) => ({
   boardCells,
   isOurTurn: whosTurn === state.playerColor,
   winner,
+  playerColor: playerColor || state.playerColor,
 }))
