@@ -8,8 +8,14 @@ export const router = {
       ? location.hash.slice(1 + route.length)
       : null
   },
-  setValue: (route: keyof typeof routes, payload: string | null) => {
-    if(!payload) return
-    location.hash = routes[route] + payload
+  buildHash: (route: keyof typeof routes, payload: string) => {
+    return routes[route] + payload
+  },
+  setValue: function(route: keyof typeof routes, payload: string) {
+    location.hash = this.buildHash(route, payload)
+  },
+  getJoinUrl: function(joinSecret: string) {
+    if(!this) return
+    return location.origin + location.pathname + '#' + this.buildHash('join', joinSecret)
   },
 }

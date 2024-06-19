@@ -30,7 +30,7 @@ export const setGameState = (
   winner?: GameState['winner'],
 ) => useGameStore.setState(() => {
   // later: try to separate into a middleware instead
-  router.setValue('game', playerSecret)
+  if(playerSecret) router.setValue('game', playerSecret)
 
   return {
     playerSecret,
