@@ -61,21 +61,21 @@ const BoardCell = ({
 
 interface IBoardProps {
   cells: CellContent[][]
-  currentPlayer: Player
-  isCurrentPlayerTurn: boolean
+  us: Player
+  isOurTurn: boolean
   makeMove: (from: { x: number, y: number }, to: { x: number, y: number }) => Promise<any>
 }
 
 export default function Board({
   cells,
-  currentPlayer,
-  isCurrentPlayerTurn,
+  us,
+  isOurTurn,
   makeMove,
 }: IBoardProps) {
 
   const [selectedCell, setSelectedCell] = useState<{ x: number, y: number } | null>(null)
   const onCellClick = (x: number, y: number) => {
-    if(!isCurrentPlayerTurn) {
+    if(!isOurTurn) {
       // TODO: provide visual feedback (or show the whole board so that it's clear that "it's their turn")
       return
     }
@@ -83,7 +83,7 @@ export default function Board({
     const inCell = cells[x][y]
     const hasClickedOwnPiece = inCell &&
       inCell != 'is_dark' &&
-      inCell.player == currentPlayer
+      inCell.player == us
 
     // unselect
     if(selectedCell && selectedCell.x == x && selectedCell.y == y) {
@@ -104,6 +104,14 @@ export default function Board({
     makeMove(selectedCell, { x, y })
     // TODO: provide visual feedback, maybe optimistic
     setSelectedCell(null)
+  }
+
+  // rendering goes from top to bottom, in reverse to the y axis
+  const rows: (number | 'top' | 'bottom')[] = ['top', 7, 6, 5, 4, 3, 2, 1, 0, 'bottom']
+  const columns: (number | 'left' | 'right')[] = ['left', 0, 1, 2, 3, 4, 5, 6, 7, 'right']
+  if(us == 'black') {
+    rows.reverse()
+    columns.reverse()
   }
 
   return (
