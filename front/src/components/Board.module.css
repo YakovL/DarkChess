@@ -1,8 +1,10 @@
 .board {
   margin: 1em;
+  width: 360px;
+  height: 360px;
   display: grid;
-  grid-template-columns: 20px repeat(8, 40px) 20px;
-  grid-template-rows: 20px repeat(8, 40px) 20px;
+  grid-template-columns: 1fr repeat(8, 2fr) 1fr;
+  grid-template-rows: 1fr repeat(8, 2fr) 1fr;
 }
 
 .gutter {

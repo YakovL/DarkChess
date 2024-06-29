@@ -14,7 +14,7 @@ const theme = {
   Piece: ({ player, piece }: { player: Player, piece: Piece }) => {
     return (
       // source: svgrepo.com/collection/zest-interface-icons/?search=chess
-      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 24 24" width="60%" height="60%" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
         <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
         <g id="SVGRepo_iconCarrier">
@@ -37,7 +37,7 @@ const BoardCell = ({
   inside, x, y, onClick, isSelected
 }: ICellProps) => {
   const displayPiece = (piece: Piece, player: Player) => (
-    <span style={{ color: player }}>
+    <span style={{ color: player, display: 'flex', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
       <theme.Piece player={player} piece={piece}></theme.Piece>
     </span>
   )
